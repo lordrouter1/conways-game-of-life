@@ -22,8 +22,10 @@ function criarGradeNoHTML(matriz){
 function getStatus(self){
     var col = $(self).index();
     var row = $(self).parent().index();
-    console.log(row,col,$(self).css('background-color'));
-    console.log(matrix.getCellState(row,col),matrix.livingCellsAround(row,col));
+    //console.log(row,col,$(self).css('background-color'));
+    //console.log(matrix.getCellState(row,col),matrix.livingCellsAround(row,col));
+    muteCel(row,col,matrix.setCellState(row,col,(matrix.getCellState(row,col)==0)?1:-1));
+    matrix.setMatrix();
 }
 
 function buscarCelulaNoHTML(x,y){
@@ -36,17 +38,9 @@ function buscarCelulaNoHTML(x,y){
     return celula
 }
 
-function adicionarCorCelula(x, y, state){
+function muteCel(x, y, state){
     let celula = buscarCelulaNoHTML(x,y);
     celula.style.backgroundColor = (state == 0)?"white":"#"+(state*2000000).toString(16).padStart(6,'0');
-    //celula.classList.add("bg-black");
-}
-
-function removerCorCelular(x, y, state){
-    let celula = buscarCelulaNoHTML(x,y);
-    //console.log(state,("#"+(state*2000000).toString(16)).padStart(6,'0'));
-    celula.style.backgroundColor = (state == 0)?"white":"#"+(state*2000000).toString(16).padStart(6,'0');
-    //celula.classList.remove("bg-black");
 }
 
 // ================= JOGO DA VIDA ==========================
@@ -67,11 +61,11 @@ function jogoDaVida(matrix){
 
             if (matrix.itsAlive(i,j) == false) {
                 if (neighborsAlive == 3) {
-                    adicionarCorCelula(i,j,matrix.setCellState(i,j,+1));
+                    muteCel(i,j,matrix.setCellState(i,j,+1));
                 }
             }else {
                 if (neighborsAlive < 2 || neighborsAlive > 3) {
-                    removerCorCelular(i,j,matrix.setCellState(i,j,-1));
+                    muteCel(i,j,matrix.setCellState(i,j,-1));
                 } 
             }
        
@@ -84,13 +78,27 @@ function jogoDaVida(matrix){
 
 // ================= INICIAR JOGO ==========================
 var matrix = new Grid();
-function run(loop=true){
-    criarGradeNoHTML(matrix.getMatrix());
+criarGradeNoHTML(matrix.getMatrix());
+var fRun = false;
+var interval;
 
-    if(loop){
-        setInterval(jogoDaVida, 200, matrix)
+addEventListener("keypress",(e)=>{
+    switch(e.key){
+        case "0":
+            clearInterval(interval);
+            interval = undefined;
+            $("#grade").css("border-color","red");
+            break;
+        case "c":
+            $('td').css("background-color","white");
+            matrix.clear();
+            break;
+        default:
+            if(parseInt(e.key) != NaN && parseInt(e.key) > 0 && parseInt(e.key) < 10){
+                if(interval){clearInterval(interval);}
+                interval = setInterval(jogoDaVida, 1000/parseInt(e.key), matrix);
+                $("#grade").css("border-color","black");
+            }
+            break;
     }
-
-}
-
-run(false);
+});
