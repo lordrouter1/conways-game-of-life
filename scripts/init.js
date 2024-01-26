@@ -38,14 +38,14 @@ function buscarCelulaNoHTML(x,y){
 
 function adicionarCorCelula(x, y, state){
     let celula = buscarCelulaNoHTML(x,y);
-    celula.style.backgroundColor = "#"+(state*2000000).toString(16);
+    celula.style.backgroundColor = (state == 0)?"white":"#"+(state*2000000).toString(16).padStart(6,'0');
     //celula.classList.add("bg-black");
 }
 
 function removerCorCelular(x, y, state){
     let celula = buscarCelulaNoHTML(x,y);
-    //console.log(state,"#"+(state*2000000).toString(16));
-    celula.style.backgroundColor = "#"+(state*2000000).toString(16);
+    //console.log(state,("#"+(state*2000000).toString(16)).padStart(6,'0'));
+    celula.style.backgroundColor = (state == 0)?"white":"#"+(state*2000000).toString(16).padStart(6,'0');
     //celula.classList.remove("bg-black");
 }
 
@@ -54,7 +54,7 @@ function removerCorCelular(x, y, state){
 function jogoDaVida(matrix){
     let numeroDeLinhas = matrix.getRow();
     let numeroDeColunas = matrix.getCol();
-    let tempMatrix = matrix;
+    matrix.setTemp();
     for (let i = 0; i < numeroDeLinhas; i++) {
         for (let j = 0; j < numeroDeColunas; j++) {
             let neighborsAlive = matrix.livingCellsAround(i,j);
@@ -65,21 +65,20 @@ function jogoDaVida(matrix){
             Toda célula viva com mais de três vizinhos vivos morre por superpopulação.
             Toda célula viva com dois ou três vizinhos vivos permanece viva. */
 
-           //novaMatriz[i][j] = matriz[i][j]
             if (matrix.itsAlive(i,j) == false) {
                 if (neighborsAlive == 3) {
-                    adicionarCorCelula(i,j,tempMatrix.setCellState(i,j,+1));
+                    adicionarCorCelula(i,j,matrix.setCellState(i,j,+1));
                 }
             }else {
                 if (neighborsAlive < 2 || neighborsAlive > 3) {
-                    removerCorCelular(i,j,tempMatrix.setCellState(i,j,-1));
+                    removerCorCelular(i,j,matrix.setCellState(i,j,-1));
                 } 
             }
        
         } 
     }
 
-    matrix = tempMatrix;
+    matrix.setMatrix();
    
 }
 

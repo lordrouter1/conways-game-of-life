@@ -5,11 +5,14 @@ class Grid{
         this.col = Math.round(window.innerWidth/12);
         this.row = this.col/2;
         let M = [];
+        let tM = [];
         for (let i = 0; i < this.row; i++) {
-            M.push(new Array(this.col).fill(0))
+            M.push(new Array(this.col).fill(0));
+            tM.push(new Array(this.col).fill(0));
         }
         
         this.matrix = M;
+        this.tempMatrix = tM;
 
         this.image = [];
         this.image[0] = (x,y)=>{return [[x,y],[x+1,y-1],[x+2,y-1],[x+3,y-1],[x+3,y],[x+3,y+1],[x+3,y+2],[x,y+3],[x+2,y+3],]}// nave
@@ -98,16 +101,32 @@ class Grid{
     // ================= matrix DE CÉLULAS ==========================
 
     setCellState(x, y,state){
-        this.matrix[x][y] += state;
-        return this.matrix[x][y];
+        this.tempMatrix[x][y] += state;
+        return this.tempMatrix[x][y];
     }
 
     getCellState(x,y){
-        return this.matrix[x][y];
+        return this.tempMatrix[x][y];
     }
 
     itsAlive(x, y){
-        return this.matrix[x][y] > 1;
+        return this.tempMatrix[x][y] > 0;
+    }
+
+    setTemp(){
+        for(let i = 0; i < this.matrix.length; i++){
+            for(let j = 0; j < this.matrix[0].length; j++){
+                this.tempMatrix[i][j] = this.matrix[i][j];
+            }
+        }
+    }
+
+    setMatrix(){
+        for(let i = 0; i < this.matrix.length; i++){
+            for(let j = 0; j < this.matrix[0].length; j++){
+                this.matrix[i][j] = this.tempMatrix[i][j];
+            }
+        }
     }
 
     setInit(posicoes){
