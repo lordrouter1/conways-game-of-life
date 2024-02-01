@@ -31,17 +31,29 @@
         </div>
     </div>
 
-    <div class="container m-auto">
-        <div class="row mt-2">
-            <div class="col">
-                <table id="grade" class="m-auto"></table>
+    <div class="w-100 h-100 d-flex" style="overflow: scroll;">
+        <div class="container m-auto">
+            <div class="row mt-2">
+                <div class="col">
+                    <table id="grade" class="m-auto"></table>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="fixed-bottom p-1 bg-secondary shadow">
-        <div class="d-grid">
-            <button class="btn btn-block btn-primary" id="newGeneration">Gerar</button>
+        <div class="row">
+            <div class="col-2 d-flex">
+                <button class="btn btn-danger m-auto" id="btnRestart"><i class="fa-solid fa-rotate"></i></button>
+            </div>
+            <div class="col">
+                <div class="d-grid">
+                    <button class="btn btn-block btn-primary btn-lg" id="newGeneration">Gerar</button>
+                </div>
+            </div>
+            <div class="col-2 d-flex">
+                <button class="btn btn-success m-auto disabled" id="btnNext"><i class="fa-solid fa-forward"></i></button>
+            </div>
         </div>
     </div>
 

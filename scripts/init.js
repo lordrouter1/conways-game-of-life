@@ -1,13 +1,34 @@
 class gameOfLife{
 
     constructor(){
-        this.money = 5;
+        this.money = 0;
         this.moneyBkp = this.money;
-        this.newMatrix(50,50);
+        this.lvl = 4;
+        this.newMatrix(this.lvl,this.lvl);
         this.initGrid(this.matrix.getMatrix());
         this.moneyShow();
 
         document.getElementById('newGeneration').addEventListener("click",()=>{this.jogoDaVida(this.matrix)});
+        document.getElementById('btnRestart').addEventListener("click",()=>{this.reset()});
+        document.getElementById('btnNext').addEventListener("click",()=>{if(this.money>=this.lvl*2){this.nextLevel()}});
+    }
+
+    reset(){
+        this.money = this.moneyBkp;
+        this.newMatrix(this.lvl,this.lvl);
+        this.initGrid(this.matrix.getMatrix());
+        $('#btnNext').addClass('disabled');
+        this.moneyShow();
+    }
+
+    nextLevel(){
+        if(this.money < this.lvl*2) return;
+        this.lvl++;
+        this.newMatrix(this.lvl,this.lvl);
+        this.initGrid(this.matrix.getMatrix());
+        this.money -= this.lvl*2;
+        this.moneyBkp = this.money;
+        this.moneyShow();
     }
 
     newMatrix(x,y){
@@ -65,7 +86,6 @@ class gameOfLife{
         let numeroDeLinhas = matrix.getRow();
         let numeroDeColunas = matrix.getCol();
         this.matrix.setTemp();
-        let flag = 0;
         for (let i = 0; i < numeroDeLinhas; i++) {
             for (let j = 0; j < numeroDeColunas; j++) {
                 let neighborsAlive = matrix.livingCellsAround(i,j);
@@ -93,7 +113,10 @@ class gameOfLife{
         }
 
         this.matrix.setMatrix();
-        if(flag>0){console.log(flag)};
+
+        if(this.money >= this.lvl*2){
+            $('#btnNext').removeClass('disabled');
+        }
     }
 }
 
