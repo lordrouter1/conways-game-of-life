@@ -1,96 +1,100 @@
-console.log("==================Jogo da Vida=====================")
+class gameOfLife{
 
-// ================= GRADE NO HTML ==========================
+    constructor(){
+        this.money = 5;
+        this.moneyBkp = this.money;
+        this.newMatrix(50,50);
+        this.initGrid(this.matrix.getMatrix());
+        this.moneyShow();
 
-function criarGradeNoHTML(matriz){
-    const table = document.getElementById("grade")
-    let linhas = ""
-    for (let i = 0; i < matriz.length; i++) {     
-        let colunas = ""
-        for (let j = 0; j < matriz[0].length; j++) {
-            if (matriz[i][j] == 1) {
-                colunas += "<td onclick='getStatus(this)'> </td>"      
-            }else{ 
-                colunas += "<td onclick='getStatus(this)'> </td>"   
+        document.getElementById('newGeneration').addEventListener("click",()=>{this.jogoDaVida(this.matrix)});
+    }
+
+    newMatrix(x,y){
+        this.matrix = new Grid(x,y);
+    }
+
+    moneyUpdate(val){
+        this.money += val;
+        this.moneyShow();
+    }
+
+    moneyShow(){
+        document.getElementById('showMoney').textContent = this.money;
+    }
+
+    initGrid(matriz){
+        const table = document.getElementById("grade")
+        let linhas = ""
+        for (let i = 0; i < matriz.length; i++) {     
+            let colunas = ""
+            for (let j = 0; j < matriz[0].length; j++) {
+                colunas += "<td onclick='getStatus(this)' class='bg-secondary' ></td>";
             }
+            linhas += "<tr>"  + colunas + "</tr>"  
         }
-        linhas += "<tr>"  + colunas + "</tr>"  
+        table.innerHTML = linhas
+    } 
+
+    getStatus(self){
+        var col = $(self).index();
+        var row = $(self).parent().index();
+        console.log(row,col,$(self).css('background-color'));
+        console.log(matrix.getCellState(row,col),matrix.livingCellsAround(row,col));
     }
-    table.innerHTML = linhas
-} 
 
-function getStatus(self){
-    var col = $(self).index();
-    var row = $(self).parent().index();
-    console.log(row,col,$(self).css('background-color'));
-    console.log(matrix.getCellState(row,col),matrix.livingCellsAround(row,col));
-}
+    cellFind(x,y){
+        let table = document.getElementById("grade")
+        let tbody = table.getElementsByTagName("tbody").item(0)
+        let linhas = tbody.getElementsByTagName("tr");
+        let linha = linhas.item(x);
+        let colunas = linha.getElementsByTagName("td");
+        let celula = colunas.item(y)
+        return celula
+    }
 
-function buscarCelulaNoHTML(x,y){
-    let table = document.getElementById("grade")
-    let tbody = table.getElementsByTagName("tbody").item(0)
-    let linhas = tbody.getElementsByTagName("tr");
-    let linha = linhas.item(x);
-    let colunas = linha.getElementsByTagName("td");
-    let celula = colunas.item(y)
-    return celula
-}
+    setState(x, y, state){
+        let celula = this.cellFind(x,y);
+        celula.style.backgroundColor = (state == 0)?"white":"#"+(state*2000000).toString(16).padStart(6,'0');
+        celula.classList.remove("bg-secondary");
+    }
 
-function adicionarCorCelula(x, y, state){
-    let celula = buscarCelulaNoHTML(x,y);
-    celula.style.backgroundColor = (state == 0)?"white":"#"+(state*2000000).toString(16).padStart(6,'0');
-    //celula.classList.add("bg-black");
-}
+    // ================= JOGO DA VIDA ==========================
 
-function removerCorCelular(x, y, state){
-    let celula = buscarCelulaNoHTML(x,y);
-    //console.log(state,("#"+(state*2000000).toString(16)).padStart(6,'0'));
-    celula.style.backgroundColor = (state == 0)?"white":"#"+(state*2000000).toString(16).padStart(6,'0');
-    //celula.classList.remove("bg-black");
-}
+    jogoDaVida(matrix){
+        let numeroDeLinhas = matrix.getRow();
+        let numeroDeColunas = matrix.getCol();
+        this.matrix.setTemp();
+        let flag = 0;
+        for (let i = 0; i < numeroDeLinhas; i++) {
+            for (let j = 0; j < numeroDeColunas; j++) {
+                let neighborsAlive = matrix.livingCellsAround(i,j);
 
-// ================= JOGO DA VIDA ==========================
+                /* Regras do jogo da vida:
+                Toda célula morta com exatamente três vizinhos vivos torna-se viva (nascimento).
+                Toda célula viva com menos de dois vizinhos vivos morre por isolamento.
+                Toda célula viva com mais de três vizinhos vivos morre por superpopulação.
+                Toda célula viva com dois ou três vizinhos vivos permanece viva. */
 
-function jogoDaVida(matrix){
-    let numeroDeLinhas = matrix.getRow();
-    let numeroDeColunas = matrix.getCol();
-    matrix.setTemp();
-    for (let i = 0; i < numeroDeLinhas; i++) {
-        for (let j = 0; j < numeroDeColunas; j++) {
-            let neighborsAlive = matrix.livingCellsAround(i,j);
-
-            /* Regras do jogo da vida:
-            Toda célula morta com exatamente três vizinhos vivos torna-se viva (nascimento).
-            Toda célula viva com menos de dois vizinhos vivos morre por isolamento.
-            Toda célula viva com mais de três vizinhos vivos morre por superpopulação.
-            Toda célula viva com dois ou três vizinhos vivos permanece viva. */
-
-            if (matrix.itsAlive(i,j) == false) {
-                if (neighborsAlive == 3) {
-                    adicionarCorCelula(i,j,matrix.setCellState(i,j,+1));
+                if (matrix.itsAlive(i,j) == false) {
+                    if (neighborsAlive == 3) {
+                        if(matrix.isNew(i,j)){
+                            this.moneyUpdate(1);
+                        }
+                        this.setState(i,j,matrix.setCellState(i,j,+1));
+                    }
+                }else {
+                    if (neighborsAlive < 2 || neighborsAlive > 3) {
+                        this.setState(i,j,matrix.setCellState(i,j,-1));
+                    } 
                 }
-            }else {
-                if (neighborsAlive < 2 || neighborsAlive > 3) {
-                    removerCorCelular(i,j,matrix.setCellState(i,j,-1));
-                } 
-            }
-       
-        } 
-    }
+        
+            } 
+        }
 
-    matrix.setMatrix();
-   
+        this.matrix.setMatrix();
+        if(flag>0){console.log(flag)};
+    }
 }
 
-// ================= INICIAR JOGO ==========================
-var matrix = new Grid();
-function run(loop=true){
-    criarGradeNoHTML(matrix.getMatrix());
-
-    if(loop){
-        setInterval(jogoDaVida, 200, matrix)
-    }
-
-}
-
-run(false);
+new gameOfLife();
