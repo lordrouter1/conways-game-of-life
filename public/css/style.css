@@ -1,0 +1,19 @@
+html, body{
+    height: 100%;
+}
+
+
+table, tr, td{
+    border: solid 1px black;
+    border-collapse: collapse; 
+}
+
+table{
+    width: 90vw;
+    height: 90vw;
+}
+
+.bg-black{
+    background-color: black;
+}
+

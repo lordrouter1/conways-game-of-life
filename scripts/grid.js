@@ -1,13 +1,13 @@
 
 class Grid{
 
-    constructor(){
-        this.col = Math.round(window.innerWidth/9);
-        this.row = this.col/2;
+    constructor(_col = Math.round(window.innerWidth/12),_row = _col/2){
+        this.col = _col;
+        this.row = _row;
         let M = [];
         let tM = [];
         for (let i = 0; i < this.row; i++) {
-            M.push(new Array(this.col).fill(0));
+            M.push(new Array(this.col).fill(-1));
             tM.push(new Array(this.col).fill(0));
         }
         
@@ -23,9 +23,7 @@ class Grid{
         this.image[5] = (x,y)=>{return [[x,y-1],[x,y],[x,y+1]]} // piscador
         this.image[6] = (x,y)=>{return [[x,y],[x+1,y-6],[x+1,y-5],[x+2,y-5],[x+2,y-1],[x+2,y],[x+2,y+1],]} // diehard
 
-        /*for(var i = 0; i < Math.floor(Math.random() * (10-3)+3); i++){
-            this.setInit(this.image[Math.floor(Math.random()*7)](Math.floor(Math.random()*100000)%this.row,Math.floor(Math.random()*100000)%this.col));
-        }*/
+        this.setInit(this.image[Math.floor(Math.random()*7)](Math.floor(Math.random()*100000)%this.row,Math.floor(Math.random()*100000)%this.col));
     }
 
     getMatrix(){
@@ -37,6 +35,10 @@ class Grid{
     }
     getCol(){
         return this.col;
+    }
+    
+    isNew(x,y){
+        return this.matrix[x][y]==-1?true:false;
     }
 
     // ===================  POSICÃO DAS CELULAS =====================
@@ -101,6 +103,9 @@ class Grid{
     // ================= matrix DE CÉLULAS ==========================
 
     setCellState(x, y,state){
+        if(this.tempMatrix[x][y] == -1){
+            this.tempMatrix[x][y] = 0;
+        }
         this.tempMatrix[x][y] += state;
         return this.tempMatrix[x][y];
     }
@@ -138,13 +143,5 @@ class Grid{
                 this.matrix[Math.floor(i)][Math.floor(j)] = 1;
             }
         })
-    }
-
-    clear(){
-        for(let i = 0; i < this.matrix.length; i++){
-            for(let j = 0; j < this.matrix[0].length; j++){
-                this.matrix[i][j] = 0;
-            }
-        }
     }
 }

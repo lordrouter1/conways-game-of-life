@@ -2,15 +2,53 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
     <title>Conway's Game of Life</title>
    
-    <link rel="stylesheet" href="style.css">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="public/css/bootstrap.min.css">
+    <link rel="stylesheet" href="public/css/style.css">
+    <link rel="stylesheet" href="public/css/all.min.css">
+    
 </head>
-<body>
-        <table id="grade"></table>
+<body class="d-flex">
+
+    <div class="fixed-top p-1 bg-secondary shadow">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <button class="btn btn-primary"><i class="fa-solid fa-bars"></i></button>
+                </div>
+                <div class="col d-flex text-light">
+                    <div class="m-auto">
+                        <div class="row">
+                            <div class="col"><i class="fa-solid fa-sack-dollar mr-2"></i></div>
+                            <div class="col"><span id="showMoney"></span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container m-auto">
+        <div class="row mt-2">
+            <div class="col">
+                <table id="grade" class="m-auto"></table>
+            </div>
+        </div>
+    </div>
+
+    <div class="fixed-bottom p-1 bg-secondary shadow">
+        <div class="d-grid">
+            <button class="btn btn-block btn-primary" id="newGeneration">Gerar</button>
+        </div>
+    </div>
+
 </body>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="scripts/grid.js"></script>
 <script src="scripts/init.js"></script>
+<script src="public/js/bootstrap.min.js"></script>
 </html>
